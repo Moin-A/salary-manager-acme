@@ -44,11 +44,42 @@ RSpec.describe SalariesController, type: :controller do
   end
 
   context "update" do
+    let(:update_params) do
+      { employee_id: employee.id, id: salary.id, salary: { base_amount: 1500, lock_version: salary.lock_version } }
+    end
+
     it "updates the salary" do
-      patch :update, params: { employee_id: employee.id, id: salary.id, salary: { base_amount: 1500 } }
+      patch :update, params: update_params
 
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body["base_amount"]).to eq("1500.0")
+    end
+
+    context "optimistic locking" do
+      it "returns the incremented lock_version after an update" do
+        patch :update, params: update_params
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["lock_version"]).to eq(salary.lock_version + 1)
+      end
+
+      it "rejects an update based on a stale lock_version" do
+        stale_version = salary.lock_version
+        Salary.find(salary.id).update!(base_amount: 1100)
+
+        patch :update, params: update_params.deep_merge(salary: { lock_version: stale_version })
+
+        expect(response).to have_http_status(:conflict)
+        expect(response.parsed_body).to include("error")
+        expect(salary.reload.base_amount).to eq(1100)
+      end
+
+      it "rejects an update without a lock_version" do
+        patch :update, params: update_params.merge(salary: { base_amount: 1500 })
+
+        expect(response).to have_http_status(:bad_request)
+        expect(salary.reload.base_amount).to eq(1000)
+      end
     end
   end
 
