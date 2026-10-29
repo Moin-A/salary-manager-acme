@@ -9,7 +9,7 @@ RSpec.describe SalariesController, type: :controller do
   before { sign_in(user) }
 
   context "when not logged in" do
-    before { cookies.delete(:user_id) }
+    before { sign_out }
 
     it "rejects index" do
       get :index, params: { employee_id: employee.id }

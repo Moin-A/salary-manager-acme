@@ -11,7 +11,7 @@ RSpec.describe EmployeesController, type: :controller do
   context "when not logged in" do
     let(:employee) { create(:employee, country_id: country.id) }
 
-    before { cookies.delete(:user_id) }
+    before { sign_out }
 
     it "rejects index" do
       get :index
