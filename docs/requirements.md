@@ -13,8 +13,8 @@ About ten HR users, one primary HR manager. Employees do not log in. A handful o
 ## Scope and features
 
 - Add and update employees, each with a country
-- Add and update employee salary, with its currency and effective date; a raise adds a row and never overwrites
-- View salary history per employee
+- Add and update employee salary, with its currency and effective date; an employee has one current salary row, updated in place
+- View salary history per employee, reconstructed from the audit log
 
 ### Reports
 
