@@ -1,0 +1,2 @@
+class ExchangeRatesController < ApplicationController
+end
