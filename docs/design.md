@@ -35,8 +35,8 @@ flowchart LR
 |---|---|
 | `POST /session` | Login |
 | `GET, POST /employees` | List with filters, create |
-| `GET, PATCH /employees/:id` | Show with current salary, update |
-| `GET, POST /employees/:id/salaries`, `PATCH /employees/:id/salaries/:id` | History from the audit log, add the first salary, update it |
+| `GET, PATCH /employees/:id` | Show, update |
+| `GET, POST /employees/:id/salaries`, `PATCH /employees/:id/salaries/:id` | Current salary plus history from the audit log, add the first salary, update it |
 | `GET /reports/salaries-by-country` | Params: `month`, `currency` (default USD) |
 | `GET /exports/employees.csv` | CSV export |
 | `GET /audit-logs` | HR only |
