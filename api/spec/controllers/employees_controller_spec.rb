@@ -60,15 +60,13 @@ RSpec.describe EmployeesController, type: :controller do
 
   context "show" do
     let!(:employee) { create(:employee, country_id: country.id) }
-    let!(:exchange_rate) { create(:exchange_rate) }
-    let!(:salary) { create(:salary, employee_id: employee.id) }
 
-    it "returns the employee with their current salary" do
+    it "returns the employee" do
       get :show, params: { id: employee.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body["first_name"]).to eq("Ada")
-      expect(response.parsed_body["salary"]["base_amount"]).to eq("1000.0")
+      expect(response.parsed_body).to include("id" => employee.id, "first_name" => "Ada", "last_name" => "Lovelace", "country_id" => country.id)
+      expect(response.parsed_body).not_to have_key("salary")
     end
   end
 end
