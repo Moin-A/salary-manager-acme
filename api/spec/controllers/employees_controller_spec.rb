@@ -4,6 +4,38 @@ RSpec.describe EmployeesController, type: :controller do
   let(:country) { create(:country) }
   let(:params) { { employee: { first_name: "Ada", last_name: "Lovelace", country_id: country.id } } }
   let(:invalid_params) { { employee: { first_name: "", last_name: "", country_id: nil } } }
+  let(:user) { create(:user) }
+
+  before { sign_in(user) }
+
+  context "when not logged in" do
+    let(:employee) { create(:employee, country_id: country.id) }
+
+    before { cookies.delete(:user_id) }
+
+    it "rejects index" do
+      get :index
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects show" do
+      get :show, params: { id: employee.id }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects create" do
+      expect {
+        post :create, params: params
+      }.not_to change(Employee, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects update" do
+      patch :update, params: { id: employee.id, employee: { first_name: "Grace" } }
+      expect(response).to have_http_status(:unauthorized)
+      expect(employee.reload.first_name).to eq("Ada")
+    end
+  end
 
   context "create" do
     it "creates an employee" do

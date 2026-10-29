@@ -4,6 +4,32 @@ RSpec.describe SalariesController, type: :controller do
   let(:employee) { create(:employee) }
   let!(:exchange_rate) { create(:exchange_rate) }
   let!(:salary) { create(:salary, employee_id: employee.id) }
+  let(:user) { create(:user) }
+
+  before { sign_in(user) }
+
+  context "when not logged in" do
+    before { cookies.delete(:user_id) }
+
+    it "rejects index" do
+      get :index, params: { employee_id: employee.id }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects create" do
+      new_employee = create(:employee)
+      expect {
+        post :create, params: { employee_id: new_employee.id, salary: { base_amount: 1000, currency: "USD", effective_date: Date.current } }
+      }.not_to change(Salary, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects update" do
+      patch :update, params: { employee_id: employee.id, id: salary.id, salary: { base_amount: 1500 } }
+      expect(response).to have_http_status(:unauthorized)
+      expect(salary.reload.base_amount).to eq(1000)
+    end
+  end
 
   context "create" do
     let(:new_employee) { create(:employee) }
