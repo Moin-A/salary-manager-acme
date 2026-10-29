@@ -14,7 +14,7 @@ flowchart LR
 | Entity | Columns | Notes |
 |---|---|---|
 | `employees` | `id, first_name, last_name, country_id` | Not the HR users |
-| `salaries` | `id, employee_id, base_amount, currency, effective_date` | One current row per employee (unique on `employee_id`); updated in place under a row lock |
+| `salaries` | `id, employee_id, base_amount, currency, effective_date, lock_version` | One current row per employee (unique on `employee_id`); updated in place with optimistic locking |
 | `countries` | `id, name, currency_code, time_zone` | Seeded |
 | `exchange_rates` | `currency_code, rate_to_usd, rate_date` | Refreshed by cron twice a day |
 | `users` | `id, login, password_digest, role` | HR staff only |
@@ -26,7 +26,7 @@ flowchart LR
 - Base amount must be above zero
 - Currency must come from the supported list (each has an exchange rate)
 - One salary row per employee: a unique index on `employee_id`, and a duplicate create returns 409
-- An update takes a row lock (pessimistic, `with_lock`), so two HR users cannot change the same row at once
+- An update uses optimistic locking (`lock_version`): if a second HR user's update was based on a stale read, it raises a conflict (409) instead of silently overwriting the first user's change
 - The audit row is written in the same transaction as the update
 
 ## API

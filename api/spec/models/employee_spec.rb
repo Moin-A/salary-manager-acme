@@ -1,11 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Employee, type: :model do
-  let(:country) { Country.create!(name: "USA", currency_code: "USD", time_zone: "America/New_York") }
-
-  let(:employee) do
-    Employee.new(first_name: "Ada", last_name: "Lovelace", country_id: country.id)
-  end
+  let(:country) { create(:country) }
+  let(:employee) { build(:employee, country_id: country.id) }
 
   context "validations" do
     it "is valid with a first name, last name and country" do

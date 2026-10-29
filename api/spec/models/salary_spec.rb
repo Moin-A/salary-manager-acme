@@ -1,13 +1,10 @@
 require "rails_helper"
 
 RSpec.describe Salary, type: :model do
-  let(:country) { Country.create!(name: "USA", currency_code: "USD", time_zone: "America/New_York") }
-  let(:employee) { Employee.create!(first_name: "Ada", last_name: "Lovelace", country_id: country.id) }
-  let!(:exchange_rate) { ExchangeRate.create!(currency_code: "USD", rate_to_usd: 1, rate_date: Date.current) }
+  let(:employee) { create(:employee) }
+  let!(:exchange_rate) { create(:exchange_rate) }
 
-  let(:salary) do
-    Salary.new(employee_id: employee.id, base_amount: 1000, currency: "USD", effective_date: Date.current)
-  end
+  let(:salary) { build(:salary, employee_id: employee.id) }
 
   context "validations" do
     it "is valid with a base amount, a supported currency and an effective date" do
@@ -63,9 +60,36 @@ RSpec.describe Salary, type: :model do
     end
 
     it "is invalid when the employee already has a salary row" do
-      Salary.create!(employee_id: employee.id, base_amount: 500, currency: "USD", effective_date: Date.current)
+      create(:salary, employee_id: employee.id)
       salary.valid?
       expect(salary.errors[:employee_id]).to include("has already been taken")
+    end
+  end
+
+  context "concurrency" do
+    it "raises when two salaries for the same employee are inserted at once" do
+      create(:salary, employee_id: employee.id)
+
+      # Simulates a second request that already passed the (race-prone)
+      # uniqueness validation before the first request committed, by
+      # skipping validation and going straight to the database. The
+      # unique index on salaries.employee_id is what has to catch it.
+      expect {
+        salary.save(validate: false)
+      }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+
+    it "raises a stale object error when updating based on stale data" do
+      created = create(:salary, employee_id: employee.id)
+
+      stale = Salary.find(created.id)
+      fresh = Salary.find(created.id)
+
+      fresh.update!(base_amount: 1100)
+
+      expect {
+        stale.update!(base_amount: 1200)
+      }.to raise_error(ActiveRecord::StaleObjectError)
     end
   end
 end
