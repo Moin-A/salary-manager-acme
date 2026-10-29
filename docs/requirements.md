@@ -33,6 +33,13 @@ About ten HR users, one primary HR manager. Employees do not log in. A handful o
 
 HR logs in, manages employees and salaries, then runs the pay report. Salary updates are audited.
 
+```mermaid
+flowchart LR
+  A[HR logs in] --> B[Manage employees and salaries]
+  B --> C[Run the pay report]
+  B -.->|salary update| D[Audit log entry]
+```
+
 ## Deliberately left out, and why
 
 | Left out | Reasoning |
