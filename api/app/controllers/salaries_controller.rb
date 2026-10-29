@@ -16,7 +16,7 @@ class SalariesController < ApplicationController
 
   def update
     salary = Salary.find(salary_id)
-    if salary.update(salary_params)
+    if salary.update(salary_update_params)
       render json: salary
     else
       render json: { errors: salary.errors }, status: :unprocessable_content
@@ -27,6 +27,15 @@ class SalariesController < ApplicationController
 
   def salary_params
     params.require(:salary).permit(:base_amount, :currency, :effective_date)
+  end
+
+  # lock_version is the version the client read; Rails compares it on save
+  # and raises StaleObjectError if someone else saved in between. Required,
+  # since leaving it out would skip the check.
+  def salary_update_params
+    attributes = params.require(:salary).permit(:base_amount, :currency, :effective_date, :lock_version)
+    attributes.require(:lock_version)
+    attributes
   end
 
   def employee_id

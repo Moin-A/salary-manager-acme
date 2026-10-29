@@ -3,6 +3,14 @@ class ApplicationController < ActionController::API
 
   before_action :authenticate
 
+  rescue_from ActionController::ParameterMissing do |error|
+    render json: { error: error.message }, status: :bad_request
+  end
+
+  rescue_from ActiveRecord::StaleObjectError do
+    render json: { error: "This record was changed by someone else. Reload and try again." }, status: :conflict
+  end
+
   private
 
   attr_reader :current_user
