@@ -92,4 +92,29 @@ RSpec.describe Salary, type: :model do
       }.to raise_error(ActiveRecord::StaleObjectError)
     end
   end
+
+  context "audit trail" do
+    let!(:saved_salary) do
+      create(:salary, employee_id: employee.id, base_amount: 1000, effective_date: Date.new(2026, 1, 1))
+    end
+
+    it "records an amount change as salary_changed with the old values" do
+      saved_salary.update!(base_amount: 1500)
+
+      expect(AuditLog.last).to have_attributes(
+        entity_type: "Salary",
+        entity_id: saved_salary.id,
+        event_type: "salary_changed",
+        snapshot: { "base_amount" => "1000.0", "currency" => "USD", "effective_date" => "2026-01-01" }
+      )
+    end
+
+    it "records a currency change as salary_changed" do
+      create(:exchange_rate, currency_code: "EUR")
+
+      saved_salary.update!(currency: "EUR")
+
+      expect(AuditLog.last.event_type).to eq("salary_changed")
+    end
+  end
 end
