@@ -17,5 +17,13 @@ RSpec.describe Audit::AuditTrail do
 
       expect(klass.audit_trail_options[:only]).to eq([ "base_amount", "currency" ])
     end
+
+    it "audits updates by default" do
+      klass = Class.new(ApplicationRecord) do
+        has_audit_trail
+      end
+
+      expect(klass.audit_trail_options[:on]).to eq([ :update ])
+    end
   end
 end
