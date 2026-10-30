@@ -30,6 +30,28 @@ export type EmployeeFields = Pick<Employee, "first_name" | "last_name" | "countr
 // Rails validation errors, keyed by attribute, e.g. { first_name: ["can't be blank"] }.
 export type FieldErrors = Record<string, string[]>;
 
+export type SalaryFields = {
+  base_amount: string;
+  currency: string;
+  effective_date: string;
+};
+
+export type SalaryHistoryEntry = SalaryFields & {
+  event_type: string | null;
+  note: string | null;
+  user_id: number | null;
+  changed_at: string;
+};
+
+export type SalaryResponse = {
+  salary: SalarySummary | null;
+  history: SalaryHistoryEntry[];
+};
+
+// What a salary save resolves to: saved, rejected by validation, or a conflict
+// because someone else changed the salary since it was loaded.
+export type SalarySaveResult = { ok: true } | { ok: false; errors: FieldErrors } | { ok: false; conflict: string };
+
 export type EmployeeListItem = {
   id: number;
   first_name: string;
