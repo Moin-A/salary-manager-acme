@@ -61,6 +61,12 @@ RSpec.describe SalariesController, type: :controller do
       expect(AuditLog.last.user_id).to eq(user.id)
     end
 
+    it "records the note sent with the change" do
+      patch :update, params: update_params.merge(note: "Annual raise")
+
+      expect(AuditLog.last.note).to eq("Annual raise")
+    end
+
     context "optimistic locking" do
       it "returns the incremented lock_version after an update" do
         patch :update, params: update_params
