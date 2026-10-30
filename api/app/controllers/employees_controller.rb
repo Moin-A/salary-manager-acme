@@ -1,6 +1,6 @@
 class EmployeesController < ApplicationController
-  DEFAULT_PER_PAGE = 20
-  MAX_PER_PAGE = 100
+  include Paginated
+
   COUNTRY_FIELDS = [ :id, :name, :currency_code ].freeze
   SALARY_FIELDS = [ :id, :base_amount, :currency, :effective_date, :lock_version ].freeze
 
@@ -8,17 +8,11 @@ class EmployeesController < ApplicationController
     employees = Employee.order(:last_name, :first_name, :id)
     employees = employees.where(country_id: filter_params[:country_id]) if filter_params[:country_id].present?
     employees = employees.search(filter_params[:q]) if filter_params[:q].present?
-    total_count = employees.count
-    page_of_employees = employees.includes(:country, :salary).limit(per_page).offset((page - 1) * per_page)
+    page_of_employees, pagination = paginate(employees.includes(:country, :salary))
 
     render json: {
       employees: page_of_employees.map { |employee| list_item_json(employee) },
-      pagination: {
-        page: page,
-        per_page: per_page,
-        total_count: total_count,
-        total_pages: (total_count.to_f / per_page).ceil
-      }
+      pagination: pagination
     }
   end
 
@@ -59,17 +53,7 @@ class EmployeesController < ApplicationController
   end
 
   def filter_params
-    params.permit(:country_id, :q, :page, :per_page)
-  end
-
-  def page
-    [ filter_params[:page].to_i, 1 ].max
-  end
-
-  # Capped so a single request can't pull all 10,000 employees.
-  def per_page
-    requested = filter_params[:per_page].to_i
-    requested.positive? ? [ requested, MAX_PER_PAGE ].min : DEFAULT_PER_PAGE
+    params.slice(:country_id, :q).permit(:country_id, :q)
   end
 
   def employee_id

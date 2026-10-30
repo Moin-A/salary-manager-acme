@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resource :session, only: [ :show, :create ]
 
   resources :countries, only: [ :index ]
+  resources :audit_logs, only: [ :index ], path: "audit-logs"
 
   resources :employees, only: [ :index, :show, :create, :update ] do
     resources :salaries, only: [ :index, :create, :update ]
