@@ -7,6 +7,7 @@ class EmployeesController < ApplicationController
   def index
     employees = Employee.order(:last_name, :first_name, :id)
     employees = employees.where(country_id: filter_params[:country_id]) if filter_params[:country_id].present?
+    employees = employees.search(filter_params[:q]) if filter_params[:q].present?
     total_count = employees.count
     page_of_employees = employees.includes(:country, :salary).limit(per_page).offset((page - 1) * per_page)
 
@@ -58,7 +59,7 @@ class EmployeesController < ApplicationController
   end
 
   def filter_params
-    params.permit(:country_id, :page, :per_page)
+    params.permit(:country_id, :q, :page, :per_page)
   end
 
   def page
