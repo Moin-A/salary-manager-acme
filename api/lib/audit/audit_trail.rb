@@ -4,6 +4,8 @@ module Audit
 
     class Error < StandardError; end
 
+    DEFAULT_OPTIONS = { on: [ :update ] }.freeze
+
     class_methods do
       def has_audit_trail(options = {})
         if instance_variable_defined?(:@_audit_trail_configured)
@@ -11,7 +13,8 @@ module Audit
         end
 
         @_audit_trail_configured = true
-        audit_trail.setup(options)
+        merged = DEFAULT_OPTIONS.merge(options)
+        audit_trail.setup(merged)
       end
 
       def audit_trail
