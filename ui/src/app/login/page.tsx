@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useLayoutEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Alert, Button, Field, Flex, Heading, IconButton, Input, InputGroup, Stack, Text, chakra } from "@chakra-ui/react";
 import { LuBuilding2, LuEye, LuEyeOff } from "react-icons/lu";
@@ -20,6 +20,19 @@ export default function LoginPage() {
       router.replace("/");
     }
   }, [user, router]);
+
+  // With Cache Components, Next hides this page instead of unmounting it after
+  // sign-in, so its state would still be here (spinner on, password filled in)
+  // when the user logs out. The cleanup runs when the page is hidden.
+  useLayoutEffect(() => {
+    return () => {
+      setLoginName("");
+      setPassword("");
+      setShowPassword(false);
+      setError(null);
+      setSubmitting(false);
+    };
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
