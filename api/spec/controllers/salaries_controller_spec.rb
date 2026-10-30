@@ -55,6 +55,12 @@ RSpec.describe SalariesController, type: :controller do
       expect(response.parsed_body["base_amount"]).to eq("1500.0")
     end
 
+    it "records who made the change" do
+      patch :update, params: update_params
+
+      expect(AuditLog.last.user_id).to eq(user.id)
+    end
+
     context "optimistic locking" do
       it "returns the incremented lock_version after an update" do
         patch :update, params: update_params
