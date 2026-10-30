@@ -99,6 +99,22 @@ RSpec.describe EmployeesController, type: :controller do
       )
     end
 
+    context "search" do
+      let(:listed_names) { response.parsed_body["employees"].map { |employee| "#{employee["first_name"]} #{employee["last_name"]}" } }
+
+      it "matches part of a first or last name, ignoring case" do
+        get :index, params: { q: "HOPP" }
+
+        expect(listed_names).to eq([ "Grace Hopper" ])
+      end
+
+      it "matches a full name" do
+        get :index, params: { q: "ada love" }
+
+        expect(listed_names).to eq([ "Ada Lovelace" ])
+      end
+    end
+
     context "pagination" do
       before { create(:employee, first_name: "Linus", last_name: "Torvalds", country_id: country.id) }
 
