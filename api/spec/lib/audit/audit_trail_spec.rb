@@ -26,4 +26,25 @@ RSpec.describe Audit::AuditTrail do
       expect(klass.audit_trail_options[:on]).to eq([ :update ])
     end
   end
+
+  context "on update" do
+    before do
+      stub_const("AuditedSalary", Class.new(ApplicationRecord) do
+        self.table_name = "salaries"
+        has_audit_trail only: [ :base_amount, :currency ]
+      end)
+    end
+
+    let(:record) { AuditedSalary.find(create(:salary, base_amount: 1000).id) }
+
+    it "writes an audit log with the previous values of the audited columns" do
+      expect { record.update!(base_amount: 1500) }.to change(AuditLog, :count).by(1)
+
+      expect(AuditLog.last).to have_attributes(
+        entity_type: "AuditedSalary",
+        entity_id: record.id,
+        snapshot: { "base_amount" => "1000.0", "currency" => "USD" }
+      )
+    end
+  end
 end
