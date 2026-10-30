@@ -1,6 +1,8 @@
 class Salary < ApplicationRecord
   has_audit_trail only: [ :base_amount, :currency, :effective_date ], event: :audit_event
 
+  belongs_to :employee
+
   validates :employee_id, :effective_date, :base_amount, :currency, presence: true
   validates :employee_id, uniqueness: true
   validates :base_amount, numericality: { greater_than: 0 }, allow_nil: true
