@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
+import { Box, Flex } from "@chakra-ui/react";
 import { getCurrentUser } from "@/lib/auth";
-import { AppHeader } from "./app-header";
+import { AppSidebar } from "./_components/app-sidebar";
 
 // Every page here needs the session before it can render (or redirect to
 // /login), so navigations into it block on the server by design.
@@ -14,9 +15,11 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <>
-      <AppHeader />
-      <main className="mx-auto w-full max-w-5xl flex-1 p-6">{children}</main>
-    </>
+    <Flex minH="100vh" w="full" bg="gray.50">
+      <AppSidebar />
+      <Box as="main" flex="1" minW="0" p="8">
+        {children}
+      </Box>
+    </Flex>
   );
 }
