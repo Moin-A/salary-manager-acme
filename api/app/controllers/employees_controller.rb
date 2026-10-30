@@ -1,8 +1,21 @@
 class EmployeesController < ApplicationController
+  DEFAULT_PER_PAGE = 20
+  MAX_PER_PAGE = 100
+
   def index
-    employees = Employee.all
+    employees = Employee.order(:last_name, :first_name, :id)
     employees = employees.where(country_id: filter_params[:country_id]) if filter_params[:country_id].present?
-    render json: employees
+    total_count = employees.count
+
+    render json: {
+      employees: employees.limit(per_page).offset((page - 1) * per_page),
+      pagination: {
+        page: page,
+        per_page: per_page,
+        total_count: total_count,
+        total_pages: (total_count.to_f / per_page).ceil
+      }
+    }
   end
 
   def show
@@ -35,7 +48,17 @@ class EmployeesController < ApplicationController
   end
 
   def filter_params
-    params.permit(:country_id)
+    params.permit(:country_id, :page, :per_page)
+  end
+
+  def page
+    [ filter_params[:page].to_i, 1 ].max
+  end
+
+  # Capped so a single request can't pull all 10,000 employees.
+  def per_page
+    requested = filter_params[:per_page].to_i
+    requested.positive? ? [ requested, MAX_PER_PAGE ].min : DEFAULT_PER_PAGE
   end
 
   def employee_id
