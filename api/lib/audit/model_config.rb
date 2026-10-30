@@ -11,6 +11,8 @@ module Audit
       @model_class.class_attribute :audit_trail_options, instance_writer: false
       @model_class.audit_trail_options = options.dup
       @model_class.audit_trail_options[:only] = event_attribute_option(:only)
+      # A note for one specific save: set it on the record just before saving.
+      @model_class.attr_accessor :audit_note
       on_update if Array(options[:on]).include?(:update)
     end
 
@@ -33,6 +35,7 @@ module Audit
           entity_id: record.id,
           event_type: event && record.public_send(event),
           user_id: Current.user&.id,
+          note: record.audit_note,
           snapshot: snapshot
         )
       end

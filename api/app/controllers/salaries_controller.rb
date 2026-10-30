@@ -16,6 +16,7 @@ class SalariesController < ApplicationController
 
   def update
     salary = Salary.find(salary_id)
+    salary.audit_note = note
     if salary.update(salary_update_params)
       render json: salary
     else
@@ -44,5 +45,9 @@ class SalariesController < ApplicationController
 
   def salary_id
     params.require(:id)
+  end
+
+  def note
+    params.fetch(:note, nil)
   end
 end
