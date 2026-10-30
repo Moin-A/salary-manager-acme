@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   resource :session, only: [ :show, :create ]
 
+  resources :countries, only: [ :index ]
+
   resources :employees, only: [ :index, :show, :create, :update ] do
     resources :salaries, only: [ :index, :create, :update ]
   end
