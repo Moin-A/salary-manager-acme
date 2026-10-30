@@ -11,10 +11,27 @@ module Audit
       @model_class.class_attribute :audit_trail_options, instance_writer: false
       @model_class.audit_trail_options = options.dup
       @model_class.audit_trail_options[:only] = event_attribute_option(:only)
+      on_update if Array(options[:on]).include?(:update)
     end
 
     def event_attribute_option(option_name)
       [ @model_class.audit_trail_options[option_name] ].flatten.compact.map(&:to_s)
+    end
+
+    # after_update runs inside the update's transaction, so if writing the
+    # audit row fails, the record change is rolled back with it.
+    def on_update
+      @model_class.after_update do |record|
+        snapshot = record.audit_trail_options[:only].index_with do |column|
+          record.attribute_before_last_save(column)
+        end
+
+        AuditLog.create!(
+          entity_type: record.class.name,
+          entity_id: record.id,
+          snapshot: snapshot
+        )
+      end
     end
   end
 end
