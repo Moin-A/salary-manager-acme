@@ -1,8 +1,14 @@
 class SalariesController < ApplicationController
+  SALARY_FIELDS = [ :id, :base_amount, :currency, :effective_date, :lock_version ].freeze
+
   def index
-    current = Salary.find_by(employee_id: employee_id)
-    history = AuditLog.where(entity_type: "Salary", entity_id: current&.id).map(&:snapshot)
-    render json: [ current&.as_json, *history ].compact
+    salary = Salary.find_by(employee_id: employee_id)
+    audit_logs = salary ? AuditLog.where(entity_type: "Salary", entity_id: salary.id).order(created_at: :desc) : AuditLog.none
+
+    render json: {
+      salary: salary&.as_json(only: SALARY_FIELDS),
+      history: audit_logs.map { |audit_log| history_entry(audit_log) }
+    }
   end
 
   def create
@@ -25,6 +31,17 @@ class SalariesController < ApplicationController
   end
 
   private
+
+  # One past version of the salary: the old values from the audit snapshot,
+  # plus what kind of change replaced them, who made it, why and when.
+  def history_entry(audit_log)
+    audit_log.snapshot.merge(
+      "event_type" => audit_log.event_type,
+      "note" => audit_log.note,
+      "user_id" => audit_log.user_id,
+      "changed_at" => audit_log.created_at
+    )
+  end
 
   def salary_params
     params.require(:salary).permit(:base_amount, :currency, :effective_date)
