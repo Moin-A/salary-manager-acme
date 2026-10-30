@@ -18,6 +18,18 @@ export type SalarySummary = {
   lock_version: number;
 };
 
+export type Employee = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  country_id: number;
+};
+
+export type EmployeeFields = Pick<Employee, "first_name" | "last_name" | "country_id">;
+
+// Rails validation errors, keyed by attribute, e.g. { first_name: ["can't be blank"] }.
+export type FieldErrors = Record<string, string[]>;
+
 export type EmployeeListItem = {
   id: number;
   first_name: string;

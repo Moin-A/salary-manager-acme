@@ -7,14 +7,16 @@ type CountrySelectProps = {
   countries: Country[];
   value: string;
   onChange: (countryId: string) => void;
-  placeholder?: string;
+  // null leaves out the empty option, e.g. in a form where a country is required.
+  placeholder?: string | null;
+  maxW?: string;
 };
 
-export function CountrySelect({ countries, value, onChange, placeholder = "All Countries" }: CountrySelectProps) {
+export function CountrySelect({ countries, value, onChange, placeholder = "All Countries", maxW = "56" }: CountrySelectProps) {
   return (
-    <NativeSelect.Root size="sm" maxW="56" bg="white">
+    <NativeSelect.Root size="sm" maxW={maxW} bg="white">
       <NativeSelect.Field aria-label="Country" value={value} onChange={(event) => onChange(event.target.value)}>
-        <option value="">{placeholder}</option>
+        {placeholder !== null && <option value="">{placeholder}</option>}
         {countries.map((country) => (
           <option key={country.id} value={String(country.id)}>
             {country.name}
