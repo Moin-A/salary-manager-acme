@@ -60,6 +60,10 @@ RSpec.describe EmployeesController, type: :controller do
     let!(:employee_in_usa) { create(:employee, country_id: country.id) }
     let!(:employee_in_india) { create(:employee, first_name: "Grace", last_name: "Hopper", country_id: other_country.id) }
 
+    # Lazy, so they read the response of the request made inside each example.
+    let(:listed_employee_in_usa) { response.parsed_body["employees"].find { |employee| employee["id"] == employee_in_usa.id } }
+    let(:listed_employee_in_india) { response.parsed_body["employees"].find { |employee| employee["id"] == employee_in_india.id } }
+
     it "returns all employees" do
       get :index
 
@@ -68,6 +72,22 @@ RSpec.describe EmployeesController, type: :controller do
         a_hash_including("first_name" => "Ada", "country_id" => country.id),
         a_hash_including("first_name" => "Grace", "country_id" => other_country.id)
       )
+    end
+
+    it "includes each employee's country and current salary" do
+      create(:exchange_rate)
+      create(:salary, employee_id: employee_in_usa.id, base_amount: 1000, effective_date: Date.new(2026, 1, 1))
+
+      get :index
+
+      expect(listed_employee_in_usa["country"]).to include("name" => country.name, "currency_code" => country.currency_code)
+      expect(listed_employee_in_usa["salary"]).to include("base_amount" => "1000.0", "currency" => "USD", "effective_date" => "2026-01-01")
+    end
+
+    it "returns a null salary for an employee who has none" do
+      get :index
+
+      expect(listed_employee_in_india).to include("salary" => nil)
     end
 
     it "filters employees by country" do
