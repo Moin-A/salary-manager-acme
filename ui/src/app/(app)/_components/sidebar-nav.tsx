@@ -5,11 +5,11 @@ import { LuChartColumn, LuClipboardList, LuUsers } from "react-icons/lu";
 import { Stack } from "@chakra-ui/react";
 import { SidebarNavItem } from "./sidebar-nav-item";
 
-// Reports and Audit Logs are shown but disabled until their pages exist.
+// Reports is shown but disabled until its page exists.
 const NAV_ITEMS = [
   { label: "Employees", href: "/employees", icon: LuUsers, ready: true },
   { label: "Reports", href: "/reports", icon: LuChartColumn, ready: false },
-  { label: "Audit Logs", href: "/audit-logs", icon: LuClipboardList, ready: false },
+  { label: "Audit Logs", href: "/audit-logs", icon: LuClipboardList, ready: true },
 ];
 
 export function SidebarNav() {

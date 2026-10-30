@@ -52,6 +52,23 @@ export type SalaryResponse = {
 // because someone else changed the salary since it was loaded.
 export type SalarySaveResult = { ok: true } | { ok: false; errors: FieldErrors } | { ok: false; conflict: string };
 
+export type AuditLogEntry = {
+  id: number;
+  user: { id: number; login: string } | null;
+  event_type: string | null;
+  entity_type: string;
+  entity_id: number;
+  old_values: Record<string, string>;
+  new_values: Record<string, string> | null;
+  note: string | null;
+  created_at: string;
+};
+
+export type AuditLogListResponse = {
+  audit_logs: AuditLogEntry[];
+  pagination: PaginationInfo;
+};
+
 export type EmployeeListItem = {
   id: number;
   first_name: string;
