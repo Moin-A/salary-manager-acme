@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { EmployeeListResponse } from "@/lib/types";
 
-type Filters = { page: number; perPage: number; countryId: string };
+type Filters = { page: number; perPage: number; countryId: string; search: string };
 
-export function useEmployees({ page, perPage, countryId }: Filters) {
+export function useEmployees({ page, perPage, countryId, search }: Filters) {
   const router = useRouter();
   const [data, setData] = useState<EmployeeListResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   // Loading is derived: the data on screen belongs to loadedKey, so it's
   // loading whenever the requested page/filter differs from that.
-  const requestKey = `${page}:${perPage}:${countryId}`;
+  const requestKey = `${page}:${perPage}:${countryId}:${search}`;
   const [loadedKey, setLoadedKey] = useState<string | null>(null);
 
   useEffect(() => {
@@ -20,6 +20,9 @@ export function useEmployees({ page, perPage, countryId }: Filters) {
     const params = new URLSearchParams({ page: String(page), per_page: String(perPage) });
     if (countryId) {
       params.set("country_id", countryId);
+    }
+    if (search) {
+      params.set("q", search);
     }
 
     fetch(`/api/employees?${params}`)
@@ -44,14 +47,14 @@ export function useEmployees({ page, perPage, countryId }: Filters) {
       })
       .finally(() => {
         if (!cancelled) {
-          setLoadedKey(`${page}:${perPage}:${countryId}`);
+          setLoadedKey(`${page}:${perPage}:${countryId}:${search}`);
         }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [page, perPage, countryId, router]);
+  }, [page, perPage, countryId, search, router]);
 
   return { data, error, loading: loadedKey !== requestKey };
 }
