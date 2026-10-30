@@ -63,8 +63,8 @@ RSpec.describe EmployeesController, type: :controller do
     it "returns all employees" do
       get :index
 
-      expect(response.parsed_body.size).to eq(2)
-      expect(response.parsed_body).to include(
+      expect(response.parsed_body["employees"].size).to eq(2)
+      expect(response.parsed_body["employees"]).to include(
         a_hash_including("first_name" => "Ada", "country_id" => country.id),
         a_hash_including("first_name" => "Grace", "country_id" => other_country.id)
       )
@@ -73,10 +73,36 @@ RSpec.describe EmployeesController, type: :controller do
     it "filters employees by country" do
       get :index, params: { country_id: country.id }
 
-      expect(response.parsed_body.size).to eq(1)
-      expect(response.parsed_body).to include(
+      expect(response.parsed_body["employees"].size).to eq(1)
+      expect(response.parsed_body["employees"]).to include(
         a_hash_including("first_name" => "Ada", "country_id" => country.id)
       )
+    end
+
+    context "pagination" do
+      before { create(:employee, first_name: "Linus", last_name: "Torvalds", country_id: country.id) }
+
+      it "returns one page of employees with the pagination details" do
+        get :index, params: { per_page: 2 }
+
+        expect(response.parsed_body["employees"].size).to eq(2)
+        expect(response.parsed_body["pagination"]).to eq(
+          "page" => 1, "per_page" => 2, "total_count" => 3, "total_pages" => 2
+        )
+      end
+
+      it "returns the requested page" do
+        get :index, params: { page: 2, per_page: 2 }
+
+        expect(response.parsed_body["employees"].size).to eq(1)
+        expect(response.parsed_body["pagination"]["page"]).to eq(2)
+      end
+
+      it "counts only the filtered employees" do
+        get :index, params: { country_id: country.id, per_page: 2 }
+
+        expect(response.parsed_body["pagination"]["total_count"]).to eq(2)
+      end
     end
   end
 
