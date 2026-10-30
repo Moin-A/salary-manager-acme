@@ -26,9 +26,12 @@ module Audit
           record.attribute_before_last_save(column)
         end
 
+        event = record.audit_trail_options[:event]
+
         AuditLog.create!(
           entity_type: record.class.name,
           entity_id: record.id,
+          event_type: event && record.public_send(event),
           snapshot: snapshot
         )
       end
