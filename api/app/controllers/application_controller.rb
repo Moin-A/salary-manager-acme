@@ -13,10 +13,12 @@ class ApplicationController < ActionController::API
 
   private
 
-  attr_reader :current_user
+  def current_user
+    Current.user
+  end
 
   def authenticate
-    @current_user = authenticate_with_http_token do |token, _options|
+    Current.user = authenticate_with_http_token do |token, _options|
       User.find_signed(token, purpose: :session)
     end
 

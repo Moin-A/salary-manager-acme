@@ -32,6 +32,7 @@ module Audit
           entity_type: record.class.name,
           entity_id: record.id,
           event_type: event && record.public_send(event),
+          user_id: Current.user&.id,
           snapshot: snapshot
         )
       end
