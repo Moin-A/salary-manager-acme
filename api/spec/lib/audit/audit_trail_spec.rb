@@ -47,4 +47,28 @@ RSpec.describe Audit::AuditTrail do
       )
     end
   end
+
+  context "event type" do
+    before do
+      stub_const("AuditedSalary", Class.new(ApplicationRecord) do
+        self.table_name = "salaries"
+        has_audit_trail only: [ :base_amount ], event: :audit_event
+
+        def audit_event
+          saved_change_to_base_amount? ? "amount_changed" : "other_change"
+        end
+      end)
+    end
+
+    let(:record) { AuditedSalary.find(create(:salary, base_amount: 1000).id) }
+
+    it "records the event returned by the model's event method" do
+      record.update!(base_amount: 1500)
+
+      expect(AuditLog.last).to have_attributes(
+        event_type: "amount_changed",
+        snapshot: { "base_amount" => "1000.0" }
+      )
+    end
+  end
 end
