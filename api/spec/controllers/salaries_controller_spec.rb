@@ -97,18 +97,41 @@ RSpec.describe SalariesController, type: :controller do
 
   context "index" do
     let!(:audit_log) do
-      create(:audit_log, entity_id: salary.id, snapshot: { "base_amount" => "800.0", "currency" => "USD", "effective_date" => 1.day.ago.to_date.to_s })
+      create(:audit_log, entity_id: salary.id, user_id: user.id, note: "Annual review",
+        snapshot: { "base_amount" => "800.0", "currency" => "USD", "effective_date" => 1.day.ago.to_date.to_s })
     end
 
-    it "returns the current salary and the historical one from the audit log" do
+    let(:expected_salary) do
+      { "id" => salary.id, "base_amount" => "1000.0", "currency" => "USD", "lock_version" => salary.lock_version }
+    end
+    let(:expected_history_entry) do
+      {
+        "base_amount" => "800.0",
+        "currency" => "USD",
+        "event_type" => "salary_changed",
+        "note" => "Annual review",
+        "user_id" => user.id,
+        "changed_at" => audit_log.created_at.as_json
+      }
+    end
+
+    it "returns the current salary with its lock_version" do
       get :index, params: { employee_id: employee.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.size).to eq(2)
-      expect(response.parsed_body).to include(
-        a_hash_including("base_amount" => "1000.0"),
-        a_hash_including("base_amount" => "800.0")
-      )
+      expect(response.parsed_body["salary"]).to include(expected_salary)
+    end
+
+    it "returns the history of old values from the audit log" do
+      get :index, params: { employee_id: employee.id }
+
+      expect(response.parsed_body["history"]).to contain_exactly(a_hash_including(expected_history_entry))
+    end
+
+    it "returns no salary and no history for an employee without a salary" do
+      get :index, params: { employee_id: create(:employee).id }
+
+      expect(response.parsed_body).to eq("salary" => nil, "history" => [])
     end
   end
 end
