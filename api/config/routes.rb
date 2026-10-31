@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :countries, only: [ :index ]
   resources :audit_logs, only: [ :index ], path: "audit-logs"
   get "reports/salaries-by-country", to: "reports#salaries_by_country"
+  get "exports/employees", to: "exports#employees", defaults: { format: :csv }
 
   resources :employees, only: [ :index, :show, :create, :update ] do
     resources :salaries, only: [ :index, :create, :update ]
