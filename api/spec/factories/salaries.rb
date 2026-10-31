@@ -6,10 +6,7 @@ FactoryBot.define do
     effective_date { Date.current }
 
     after(:build) do |salary|
-      ExchangeRate.find_or_create_by!(currency_code: salary.currency) do |rate|
-        rate.rate_to_usd = 1
-        rate.rate_date = Date.current
-      end
+      create(:exchange_rate, currency_code: salary.currency) unless ExchangeRate.exists?(currency_code: salary.currency)
     end
   end
 end
