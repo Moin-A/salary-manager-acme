@@ -1,8 +1,11 @@
-# Seeds countries, exchange rates and 10,000 employees with one current salary
-# each. Safe to run again: countries and rates are only created when missing,
-# and employees are only seeded into an empty table.
+# Seeds an admin user, countries, exchange rates and 10,000 employees with one
+# current salary each. Safe to run again: the admin, countries and rates are
+# only created when missing, and employees are only seeded into an empty table.
 #
 #   bin/rails db:seed
+#
+# The admin logs in as admin / admin123 unless ADMIN_LOGIN and ADMIN_PASSWORD
+# are set; set them in any deployed environment.
 
 EMPLOYEE_COUNT = 10_000
 
@@ -29,6 +32,11 @@ LAST_NAMES = %w[
   Kapoor Khan Kim Kumar Lee Lopez Martin Meyer Miller Mori Nair Nguyen Patel
   Rossi Sato Schmidt Sharma Singh Smith Suzuki Tan Taylor Thomas Wang Wilson Wong
 ].freeze
+
+User.find_or_create_by!(login: ENV.fetch("ADMIN_LOGIN", "admin")) do |user|
+  user.password = ENV.fetch("ADMIN_PASSWORD", "admin123")
+  user.role = "admin"
+end
 
 COUNTRIES.each do |attributes|
   Country.find_or_create_by!(name: attributes[:name]) do |country|
