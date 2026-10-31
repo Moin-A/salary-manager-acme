@@ -3,7 +3,7 @@ import { PersonName } from "@/components/person-name";
 import { formatDateTime } from "@/lib/format";
 import type { AuditLogEntry } from "@/lib/types";
 import { AuditValues } from "./audit-values";
-import { EventTypeBadge } from "./event-type-badge";
+import { EventTypeBadge } from "@/components/event-type-badge";
 
 export function AuditLogRow({ auditLog }: { auditLog: AuditLogEntry }) {
   return (
