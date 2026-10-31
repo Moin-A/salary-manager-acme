@@ -25,7 +25,8 @@ export type Employee = {
   country_id: number;
 };
 
-export type EmployeeFields = Pick<Employee, "first_name" | "last_name" | "country_id">;
+// country_id is null while a new employee's country hasn't been picked.
+export type EmployeeFields = Pick<Employee, "first_name" | "last_name"> & { country_id: number | null };
 
 // Rails validation errors, keyed by attribute, e.g. { first_name: ["can't be blank"] }.
 export type FieldErrors = Record<string, string[]>;
