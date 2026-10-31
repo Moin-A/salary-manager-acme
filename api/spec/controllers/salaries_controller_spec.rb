@@ -45,6 +45,28 @@ RSpec.describe SalariesController, type: :controller do
 
   context "create" do
     let(:new_employee) { create(:employee) }
+    let(:salary_params) { { base_amount: 2000, currency: "USD", effective_date: Date.current } }
+    let(:already_exists) { { "error" => "This record already exists." } }
+
+    it "rejects a second salary for the same employee as a conflict" do
+      expect {
+        post :create, params: { employee_id: employee.id, salary: salary_params }
+      }.not_to change(Salary, :count)
+
+      expect(response).to have_http_status(:conflict)
+      expect(response.parsed_body).to eq(already_exists)
+    end
+
+    # Two creates can both pass the uniqueness validation; the unique index stops the second.
+    it "rejects a second salary that races past the validation as a conflict" do
+      allow_any_instance_of(Salary).to receive(:save).and_raise(ActiveRecord::RecordNotUnique)
+
+      post :create, params: { employee_id: new_employee.id, salary: salary_params }
+
+      expect(response).to have_http_status(:conflict)
+      expect(response.parsed_body).to eq(already_exists)
+    end
+
 
     it "creates the first salary for the employee" do
       expect {
