@@ -49,6 +49,15 @@ RSpec.describe ReportsController, type: :controller do
       expect(response.parsed_body["countries"]).to eq(expected_countries)
     end
 
+    it "lists the exchange rate used for each currency, with its date" do
+      get :salaries_by_country, params: { month: current_month }
+
+      expect(response.parsed_body["exchange_rates"]).to eq([
+        { "currency" => "INR", "rate_to_usd" => 0.012, "rate_date" => Date.current.to_s },
+        { "currency" => "USD", "rate_to_usd" => 1.0, "rate_date" => Date.current.to_s }
+      ])
+    end
+
     # A typo fixed on the same day: both versions start this month, so the
     # effective date alone can't tell which one is in effect.
     context "when a salary is corrected keeping the same effective date" do
