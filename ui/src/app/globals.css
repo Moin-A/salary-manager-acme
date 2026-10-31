@@ -4,3 +4,9 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+
+/* Always reserve the scrollbar's space, so pages don't shift sideways when
+   content (like the salary history) grows tall enough to scroll. */
+html {
+  scrollbar-gutter: stable;
+}
