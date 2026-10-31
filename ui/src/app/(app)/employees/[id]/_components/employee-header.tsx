@@ -13,7 +13,7 @@ export function EmployeeHeader({ employee, countryName, onEdit, editing }: Emplo
   const name = `${employee.first_name} ${employee.last_name}`;
 
   return (
-    <Flex justify="space-between" align="center" mb="6">
+    <Flex justify="space-between" align="center" wrap="wrap" gap="3" mb="6">
       <HStack gap="4">
         <Avatar.Root size="lg" colorPalette="blue">
           <Avatar.Fallback name={name} />

@@ -15,7 +15,7 @@ export function TablePagination({ pagination, onPageChange }: TablePaginationPro
   }
 
   return (
-    <Flex justify="flex-end" mt="4">
+    <Flex justify={{ base: "center", sm: "flex-end" }} mt="4">
       <Pagination.Root
         count={pagination.total_count}
         pageSize={pagination.per_page}

@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { label: "Audit Logs", href: "/audit-logs", icon: LuClipboardList, ready: true },
 ];
 
-export function SidebarNav() {
+export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
@@ -24,6 +24,7 @@ export function SidebarNav() {
           icon={item.icon}
           active={pathname.startsWith(item.href)}
           disabled={!item.ready}
+          onNavigate={onNavigate}
         />
       ))}
     </Stack>

@@ -10,7 +10,7 @@ export function AppSidebar() {
   const { user, logout } = useAuth();
 
   return (
-    <Flex as="aside" direction="column" w="220px" h="100vh" position="sticky" top="0" flexShrink={0} p="4" bg="#0f1e33" color="white">
+    <Flex as="aside" display={{ base: "none", md: "flex" }} direction="column" w="220px" h="100vh" position="sticky" top="0" flexShrink={0} p="4" bg="#0f1e33" color="white">
       <SidebarBrand />
       <SidebarNav />
       {user && <UserMenu user={user} onLogout={logout} />}

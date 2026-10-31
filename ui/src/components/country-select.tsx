@@ -1,6 +1,6 @@
 "use client";
 
-import { NativeSelect } from "@chakra-ui/react";
+import { NativeSelect, type NativeSelectRootProps } from "@chakra-ui/react";
 import type { Country } from "@/lib/types";
 
 type CountrySelectProps = {
@@ -9,10 +9,10 @@ type CountrySelectProps = {
   onChange: (countryId: string) => void;
   // null leaves out the empty option, e.g. in a form where a country is required.
   placeholder?: string | null;
-  maxW?: string;
+  maxW?: NativeSelectRootProps["maxW"];
 };
 
-export function CountrySelect({ countries, value, onChange, placeholder = "All Countries", maxW = "56" }: CountrySelectProps) {
+export function CountrySelect({ countries, value, onChange, placeholder = "All Countries", maxW = { base: "full", sm: "56" } }: CountrySelectProps) {
   return (
     <NativeSelect.Root size="sm" maxW={maxW} bg="white">
       <NativeSelect.Field aria-label="Country" value={value} onChange={(event) => onChange(event.target.value)}>

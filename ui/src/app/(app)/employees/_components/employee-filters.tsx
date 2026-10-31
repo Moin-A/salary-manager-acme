@@ -1,6 +1,6 @@
 "use client";
 
-import { HStack, Spinner } from "@chakra-ui/react";
+import { Stack, Spinner } from "@chakra-ui/react";
 import { CountrySelect } from "@/components/country-select";
 import { SearchInput } from "@/components/search-input";
 import { useCountries } from "@/hooks/use-countries";
@@ -17,10 +17,10 @@ export function EmployeeFilters({ search, onSearchChange, countryId, onCountryCh
   const countries = useCountries();
 
   return (
-    <HStack gap="3" mb="3">
+    <Stack direction={{ base: "column", sm: "row" }} align={{ sm: "center" }} gap="3" mb="3">
       <SearchInput value={search} onChange={onSearchChange} placeholder="Search by name…" />
       <CountrySelect countries={countries} value={countryId} onChange={onCountryChange} />
       {loading && <Spinner size="sm" color="blue.500" />}
-    </HStack>
+    </Stack>
   );
 }
