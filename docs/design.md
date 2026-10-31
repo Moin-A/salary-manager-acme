@@ -25,7 +25,7 @@ flowchart LR
 - Names, country and effective date are required
 - Base amount must be above zero
 - Currency must come from the supported list (each has an exchange rate); when left out, it defaults to the employee's country's currency
-- One salary row per employee: a unique index on `employee_id`, and a duplicate create returns 409
+- One salary row per employee: a unique index on `employee_id`, and a duplicate create returns 409. The uniqueness validation catches the usual case; when two creates race past it, the index rejects the second, and that also returns 409
 - An update uses optimistic locking (`lock_version`): if a second HR user's update was based on a stale read, it raises a conflict (409) instead of silently overwriting the first user's change
 - The audit row is written in the same transaction as the update
 
@@ -51,6 +51,10 @@ flowchart LR
 ## Audit and stack
 
 The service writes the audit row in the same transaction as the change. Next.js on Vercel proxies `/api/*` to Rails and Postgres on Render, with all logic in Rails.
+
+The audit row comes from an `after_update` callback that calls `create!`: it runs inside the update's transaction, so a failed audit write rolls the change back, and a change is never saved without its audit row.
+
+Trade-off: callbacks only run for normal saves. `update_column`, `update_columns`, `update_all`, `insert_all` and raw SQL skip them, so a change made that way is not audited. The app never changes salaries that way, so given the time available a callback was enough. In v2, a Postgres trigger on `salaries` would write the audit row in the database itself, covering every write path; the user and note would be passed in through a transaction-local setting (`SET LOCAL`).
 
 Why Postgres:
 
