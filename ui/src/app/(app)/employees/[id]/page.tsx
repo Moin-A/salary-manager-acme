@@ -11,6 +11,7 @@ import { useSalary } from "@/hooks/use-salary";
 import { EmployeeHeader } from "./_components/employee-header";
 import { EmployeeInfoCard } from "./_components/employee-info-card";
 import { SalaryCard } from "./_components/salary-card";
+import { SalaryHistory } from "./_components/salary-history";
 
 export default function EmployeeDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -65,6 +66,7 @@ export default function EmployeeDetailPage() {
           onDoneEditing={() => setEditingSalary(false)}
         />
       )}
+      {salary.data && <SalaryHistory history={salary.data.history} />}
     </Box>
   );
 }
