@@ -7,8 +7,8 @@ flowchart LR
   countries -->|has many| employees
   employees -->|has one current| salaries
   users -->|makes| audit_logs
-  salaries -.->|audited via entity_type, entity_id| audit_logs
-  countries -.->|by currency_code| exchange_rates
+  salaries -.->|"has many<br/>(via entity_type, entity_id)"| audit_logs
+  countries -.->|has one| exchange_rates
 ```
 
 | Entity | Columns | Notes |
