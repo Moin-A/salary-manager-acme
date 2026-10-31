@@ -3,6 +3,8 @@ class Salary < ApplicationRecord
 
   belongs_to :employee
 
+  scope :effective_on_or_before, ->(date) { where(effective_date: ..date) }
+
   validates :employee_id, :effective_date, :base_amount, :currency, presence: true
   validates :employee_id, uniqueness: true
   validates :base_amount, numericality: { greater_than: 0 }, allow_nil: true

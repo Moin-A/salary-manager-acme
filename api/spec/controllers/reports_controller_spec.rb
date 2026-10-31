@@ -49,6 +49,21 @@ RSpec.describe ReportsController, type: :controller do
       expect(response.parsed_body["countries"]).to eq(expected_countries)
     end
 
+    # A typo fixed on the same day: both versions start this month, so the
+    # effective date alone can't tell which one is in effect.
+    context "when a salary is corrected keeping the same effective date" do
+      before do
+        usa_salary.update!(base_amount: 7000, effective_date: this_month)
+        usa_salary.update!(base_amount: 10_000, effective_date: this_month)
+      end
+
+      it "uses the corrected salary" do
+        get :salaries_by_country, params: { month: current_month }
+
+        expect(usa_average).to eq(6000.0)
+      end
+    end
+
     # The 1,000 USA salary changes over the months. Each change moves the old
     # amount into the audit history; the salaries row keeps the latest.
     # With the other two USA salaries (8,000 in total), the USA average is
