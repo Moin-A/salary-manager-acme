@@ -1,4 +1,7 @@
 class ReportsController < ApplicationController
+  # Reports have no model: authorizes the :report subject.
+  authorize_resource class: false
+
   def salaries_by_country
     month = Date.strptime(report_params.require(:month), "%Y-%m")
 

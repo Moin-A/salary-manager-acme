@@ -1,6 +1,8 @@
 class AuditLogsController < ApplicationController
   include Paginated
 
+  authorize_resource
+
   def index
     audit_logs, pagination = paginate(AuditLog.includes(:user).order(created_at: :desc, id: :desc))
     new_values = AuditLog.new_values_for(audit_logs)

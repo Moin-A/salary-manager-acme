@@ -1,4 +1,6 @@
 class SalariesController < ApplicationController
+  authorize_resource
+
   SALARY_FIELDS = [ :id, :base_amount, :currency, :effective_date, :lock_version ].freeze
 
   def index

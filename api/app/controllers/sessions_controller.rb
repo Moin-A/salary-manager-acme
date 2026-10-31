@@ -2,6 +2,8 @@ class SessionsController < ApplicationController
   TOKEN_LIFETIME = 12.hours
 
   skip_before_action :authenticate, only: :create
+  # Logging in, and seeing who you are, is open to every user.
+  skip_authorization_check
 
   def create
     user = User.authenticate_by(login: session_params[:login], password: session_params[:password])

@@ -1,6 +1,8 @@
 class EmployeesController < ApplicationController
   include Paginated
 
+  authorize_resource
+
   COUNTRY_FIELDS = [ :id, :name, :currency_code ].freeze
   SALARY_FIELDS = [ :id, :base_amount, :currency, :effective_date, :lock_version ].freeze
 
