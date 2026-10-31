@@ -9,14 +9,16 @@ import type { FieldErrors, SalaryFields, SalarySaveResult, SalarySummary } from 
 type SalaryFormProps = {
   salary: SalarySummary | null;
   currencies: string[];
+  // The employee's country's currency, pre-selected for a new salary.
+  defaultCurrency?: string;
   onSave: (fields: SalaryFields, note: string) => Promise<SalarySaveResult>;
   onReload: () => void;
   onDone: () => void;
 };
 
-export function SalaryForm({ salary, currencies, onSave, onReload, onDone }: SalaryFormProps) {
+export function SalaryForm({ salary, currencies, defaultCurrency, onSave, onReload, onDone }: SalaryFormProps) {
   const [baseAmount, setBaseAmount] = useState(salary ? String(Number(salary.base_amount)) : "");
-  const [currency, setCurrency] = useState(salary?.currency ?? "");
+  const [currency, setCurrency] = useState(salary?.currency ?? defaultCurrency ?? "");
   const [effectiveDate, setEffectiveDate] = useState(salary?.effective_date ?? "");
   const [note, setNote] = useState("");
   const [errors, setErrors] = useState<FieldErrors>({});

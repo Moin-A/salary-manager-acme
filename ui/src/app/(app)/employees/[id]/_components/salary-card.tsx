@@ -7,6 +7,7 @@ import { SalaryOverview } from "./salary-overview";
 type SalaryCardProps = {
   salary: SalarySummary | null;
   currencies: string[];
+  defaultCurrency?: string;
   editing: boolean;
   onEdit: () => void;
   onSave: (fields: SalaryFields, note: string) => Promise<SalarySaveResult>;
@@ -14,7 +15,7 @@ type SalaryCardProps = {
   onDoneEditing: () => void;
 };
 
-export function SalaryCard({ salary, currencies, editing, onEdit, onSave, onReload, onDoneEditing }: SalaryCardProps) {
+export function SalaryCard({ salary, currencies, defaultCurrency, editing, onEdit, onSave, onReload, onDoneEditing }: SalaryCardProps) {
   return (
     <Card.Root size="sm" mb="6">
       <Card.Header>
@@ -30,7 +31,14 @@ export function SalaryCard({ salary, currencies, editing, onEdit, onSave, onRelo
       </Card.Header>
       <Card.Body>
         {editing ? (
-          <SalaryForm salary={salary} currencies={currencies} onSave={onSave} onReload={onReload} onDone={onDoneEditing} />
+          <SalaryForm
+            salary={salary}
+            currencies={currencies}
+            defaultCurrency={defaultCurrency}
+            onSave={onSave}
+            onReload={onReload}
+            onDone={onDoneEditing}
+          />
         ) : salary ? (
           <SalaryOverview salary={salary} />
         ) : (

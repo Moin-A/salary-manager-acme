@@ -6,6 +6,7 @@ import { Box } from "@chakra-ui/react";
 import { BackLink } from "@/components/back-link";
 import { ErrorAlert } from "@/components/error-alert";
 import { useCountries } from "@/hooks/use-countries";
+import { currencyCodes, findCountry } from "@/lib/countries";
 import { useEmployee } from "@/hooks/use-employee";
 import { useSalary } from "@/hooks/use-salary";
 import { EmployeeHeader } from "./_components/employee-header";
@@ -30,8 +31,8 @@ export default function EmployeeDetailPage() {
     };
   }, []);
 
-  const countryName = countries.find((country) => country.id === employee?.country_id)?.name;
-  const currencies = [...new Set(countries.map((country) => country.currency_code))].sort();
+  const country = findCountry(countries, employee?.country_id);
+  const currencies = currencyCodes(countries);
 
   return (
     <Box>
@@ -42,7 +43,7 @@ export default function EmployeeDetailPage() {
         <>
           <EmployeeHeader
             employee={employee}
-            countryName={countryName}
+            countryName={country?.name}
             onEdit={() => setEditingEmployee(true)}
             editing={editingEmployee}
           />
@@ -59,6 +60,7 @@ export default function EmployeeDetailPage() {
         <SalaryCard
           salary={salary.data.salary}
           currencies={currencies}
+          defaultCurrency={country?.currency_code}
           editing={editingSalary}
           onEdit={() => setEditingSalary(true)}
           onSave={salary.save}

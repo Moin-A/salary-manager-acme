@@ -1,5 +1,6 @@
 import { Card, SimpleGrid } from "@chakra-ui/react";
 import { DetailField } from "@/components/detail-field";
+import { findCountry } from "@/lib/countries";
 import type { Country, Employee, EmployeeFields, FieldErrors } from "@/lib/types";
 import { EmployeeForm } from "../../_components/employee-form";
 
@@ -12,7 +13,7 @@ type EmployeeInfoCardProps = {
 };
 
 export function EmployeeInfoCard({ employee, countries, editing, onSave, onDoneEditing }: EmployeeInfoCardProps) {
-  const countryName = countries.find((country) => country.id === employee.country_id)?.name;
+  const countryName = findCountry(countries, employee.country_id)?.name;
 
   return (
     <Card.Root size="sm" mb="6">
