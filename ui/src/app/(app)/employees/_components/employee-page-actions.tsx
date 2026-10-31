@@ -5,13 +5,13 @@ import { Button } from "@chakra-ui/react";
 export function EmployeePageActions() {
   return (
     <>
-      <Button asChild colorPalette="blue" size="sm">
+      <Button asChild colorPalette="blue" size={{ base: "md", md: "sm" }}>
         <NextLink href="/employees/new">
           <LuPlus /> Add Employee
         </NextLink>
       </Button>
       {/* A plain link: the browser downloads the file the API route sends back. */}
-      <Button asChild variant="outline" size="sm">
+      <Button asChild variant="outline" size={{ base: "md", md: "sm" }}>
         <a href="/api/exports/employees" download>
           <LuDownload /> Export CSV
         </a>

@@ -14,7 +14,7 @@ export function SalaryOverview({ salary }: { salary: SalarySummary }) {
           Effective from {salary.effective_date}
         </Text>
       </Box>
-      <SimpleGrid columns={3} gap="4" flex="1" alignContent="center">
+      <SimpleGrid minChildWidth="28" gap="4" flex="1" alignContent="center">
         <DetailField label="Base Amount">{formatAmount(salary.base_amount)}</DetailField>
         <DetailField label="Currency">{salary.currency}</DetailField>
         <DetailField label="Effective Date">{salary.effective_date}</DetailField>

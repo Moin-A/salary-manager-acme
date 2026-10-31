@@ -12,7 +12,7 @@ type SearchInputProps = {
 export function SearchInput({ value, onChange, placeholder = "Search…" }: SearchInputProps) {
   return (
     <InputGroup startElement={<LuSearch />} maxW={{ base: "full", sm: "sm" }}>
-      <Input bg="white" size="sm" placeholder={placeholder} value={value} onChange={(event) => onChange(event.target.value)} />
+      <Input bg="white" size={{ base: "md", md: "sm" }} placeholder={placeholder} value={value} onChange={(event) => onChange(event.target.value)} />
     </InputGroup>
   );
 }

@@ -16,7 +16,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Flex direction={{ base: "column", md: "row" }} minH="100vh" w="full" bg="gray.50">
+    <Flex direction={{ base: "column", md: "row" }} minH="100vh" w="full" overflowX="clip" bg="gray.50">
       <AppSidebar />
       <MobileNav />
       <Box as="main" flex="1" minW="0" p={{ base: "4", md: "8" }}>

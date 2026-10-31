@@ -14,7 +14,7 @@ type CountrySelectProps = {
 
 export function CountrySelect({ countries, value, onChange, placeholder = "All Countries", maxW = { base: "full", sm: "56" } }: CountrySelectProps) {
   return (
-    <NativeSelect.Root size="sm" maxW={maxW} bg="white">
+    <NativeSelect.Root size={{ base: "md", md: "sm" }} maxW={maxW} bg="white">
       <NativeSelect.Field aria-label="Country" value={value} onChange={(event) => onChange(event.target.value)}>
         {placeholder !== null && <option value="">{placeholder}</option>}
         {countries.map((country) => (
