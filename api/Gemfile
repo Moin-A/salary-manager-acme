@@ -59,3 +59,5 @@ group :development, :test do
 end
 
 gem "cancancan", "~> 3.7"
+
+gem "csv", "~> 3.3"

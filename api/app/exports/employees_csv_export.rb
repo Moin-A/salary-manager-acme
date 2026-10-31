@@ -1,0 +1,2 @@
+class EmployeesCsvExport < CsvExport
+end
