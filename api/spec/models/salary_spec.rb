@@ -41,18 +41,6 @@ RSpec.describe Salary, type: :model do
       expect(salary.errors[:base_amount]).to include("must be greater than 0")
     end
 
-    it "is invalid with a nil currency" do
-      salary.currency = nil
-      salary.valid?
-      expect(salary.errors[:currency]).to include("can't be blank")
-    end
-
-    it "is invalid with a blank currency" do
-      salary.currency = ""
-      salary.valid?
-      expect(salary.errors[:currency]).to include("can't be blank")
-    end
-
     it "is invalid with a currency that has no exchange rate" do
       salary.currency = "ZZZ"
       salary.valid?
@@ -63,6 +51,33 @@ RSpec.describe Salary, type: :model do
       create(:salary, employee_id: employee.id)
       salary.valid?
       expect(salary.errors[:employee_id]).to include("has already been taken")
+    end
+  end
+
+  context "default currency" do
+    let(:india) { create(:country, :india) }
+    let!(:inr_rate) { create(:exchange_rate, currency_code: "INR") }
+    let(:indian_employee) { create(:employee, country_id: india.id) }
+
+    it "uses the employee's country currency when none is given" do
+      salary = build(:salary, employee_id: indian_employee.id, currency: nil)
+
+      expect(salary).to be_valid
+      expect(salary.currency).to eq("INR")
+    end
+
+    it "uses the employee's country currency when the currency is blank" do
+      salary = build(:salary, employee_id: indian_employee.id, currency: "")
+
+      expect(salary).to be_valid
+      expect(salary.currency).to eq("INR")
+    end
+
+    it "keeps a currency that is given" do
+      salary = build(:salary, employee_id: indian_employee.id, currency: "USD")
+
+      expect(salary).to be_valid
+      expect(salary.currency).to eq("USD")
     end
   end
 
