@@ -8,3 +8,8 @@ export function formatDateTime(value: string) {
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
+
+// Report figures in whole US dollars: 76452.21 -> "$76,452".
+export function formatUsd(amount: number) {
+  return amount.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+}

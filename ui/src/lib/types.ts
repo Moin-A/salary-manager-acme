@@ -89,3 +89,26 @@ export type EmployeeListResponse = {
   employees: EmployeeListItem[];
   pagination: PaginationInfo;
 };
+
+export type CountrySalaryStats = {
+  country: string;
+  currency: string;
+  average: number;
+  median: number;
+  min: number;
+  max: number;
+  employee_count: number;
+};
+
+export type ExchangeRateInfo = {
+  currency: string;
+  rate_to_usd: number;
+  rate_date: string;
+};
+
+export type SalaryReportResponse = {
+  month: string;
+  currency: string;
+  countries: CountrySalaryStats[];
+  exchange_rates: ExchangeRateInfo[];
+};
