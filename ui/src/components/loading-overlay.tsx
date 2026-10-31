@@ -34,7 +34,6 @@ function Overlay() {
       animationDelay="150ms"
       animationFillMode="both"
     >
-      <ProgressBar />
       {/* Just below the top of the results on every page; sticks in view
           while scrolling a long list. */}
       <Flex direction="column" align="center" gap="3" position="sticky" top="40vh" pt="16" pb="8">
@@ -43,25 +42,6 @@ function Overlay() {
           Loading…
         </Text>
       </Flex>
-    </Box>
-  );
-}
-
-// A thin bar sliding along the top edge.
-function ProgressBar() {
-  return (
-    <Box position="absolute" top="0" insetX="0" h="3px" bg="blue.100" overflow="hidden">
-      <Box
-        h="full"
-        w="40%"
-        bg="blue.500"
-        borderRadius="full"
-        animationName="loadingBar"
-        animationDuration="1.1s"
-        animationTimingFunction="ease-in-out"
-        animationIterationCount="infinite"
-        _motionReduce={{ animation: "none" }}
-      />
     </Box>
   );
 }

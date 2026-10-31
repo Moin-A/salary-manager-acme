@@ -10,10 +10,6 @@ const config = defineConfig({
         "0%, 80%, 100%": { transform: "scale(0.5)", opacity: "0.35" },
         "40%": { transform: "scale(1)", opacity: "1" },
       },
-      loadingBar: {
-        from: { transform: "translateX(-100%)" },
-        to: { transform: "translateX(250%)" },
-      },
     },
   },
 });
