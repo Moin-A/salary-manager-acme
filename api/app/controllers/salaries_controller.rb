@@ -17,6 +17,9 @@ class SalariesController < ApplicationController
     salary = Salary.new(salary_params.merge(employee_id: employee_id))
     if salary.save
       render json: salary, status: :created
+    elsif salary.errors.of_kind?(:employee_id, :taken)
+      # An employee has one salary row: a second one is a conflict, not a validation error.
+      render_already_exists
     else
       render json: { errors: salary.errors }, status: :unprocessable_content
     end

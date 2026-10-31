@@ -17,7 +17,16 @@ class ApplicationController < ActionController::API
     render json: { error: "This record was changed by someone else. Reload and try again." }, status: :conflict
   end
 
+  # A unique index rejected the write, e.g. two creates racing past a uniqueness validation.
+  rescue_from ActiveRecord::RecordNotUnique do
+    render_already_exists
+  end
+
   private
+
+  def render_already_exists
+    render json: { error: "This record already exists." }, status: :conflict
+  end
 
   def current_user
     Current.user
