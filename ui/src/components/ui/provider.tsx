@@ -1,13 +1,14 @@
 "use client";
 
-import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { EmotionRegistry } from "./emotion-registry";
+import { system } from "./system";
 
 export function Provider({ children }: { children: ReactNode }) {
   return (
     <EmotionRegistry>
-      <ChakraProvider value={defaultSystem}>{children}</ChakraProvider>
+      <ChakraProvider value={system}>{children}</ChakraProvider>
     </EmotionRegistry>
   );
 }

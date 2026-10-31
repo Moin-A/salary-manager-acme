@@ -7,7 +7,7 @@ type LoadingOverlayProps = {
 };
 
 // Covers its children while they reload, so stale results read as "being
-// replaced". It fades in after 150ms (in CSS), so fast responses never flash it.
+// replaced". It fades in after 150ms, so fast responses never flash it.
 // With nothing to cover yet (the first load), it reserves some space instead.
 export function LoadingOverlay({ loading, children }: LoadingOverlayProps) {
   return (
@@ -20,28 +20,30 @@ export function LoadingOverlay({ loading, children }: LoadingOverlayProps) {
 
 function Overlay() {
   return (
-    <Flex
+    <Box
       role="status"
       position="absolute"
       inset="0"
       zIndex="1"
-      align="flex-start"
-      justify="center"
-      pt="24"
       borderRadius="md"
-      overflow="hidden"
+      overflow="clip"
       bg="whiteAlpha.700"
       backdropFilter="blur(2px)"
-      style={{ animation: "loading-overlay-in 200ms ease-out 150ms both" }}
+      animationName="fade-in"
+      animationDuration="200ms"
+      animationDelay="150ms"
+      animationFillMode="both"
     >
       <ProgressBar />
-      <Flex direction="column" align="center" gap="3" position="sticky" top="40%">
+      {/* Just below the top of the results on every page; sticks in view
+          while scrolling a long list. */}
+      <Flex direction="column" align="center" gap="3" position="sticky" top="40vh" pt="16" pb="8">
         <Dots />
         <Text fontSize="sm" color="fg.muted" fontWeight="medium">
           Loading…
         </Text>
       </Flex>
-    </Flex>
+    </Box>
   );
 }
 
@@ -50,12 +52,15 @@ function ProgressBar() {
   return (
     <Box position="absolute" top="0" insetX="0" h="3px" bg="blue.100" overflow="hidden">
       <Box
-        className="loading-motion"
         h="full"
         w="40%"
         bg="blue.500"
         borderRadius="full"
-        style={{ animation: "loading-bar 1.1s ease-in-out infinite" }}
+        animationName="loadingBar"
+        animationDuration="1.1s"
+        animationTimingFunction="ease-in-out"
+        animationIterationCount="infinite"
+        _motionReduce={{ animation: "none" }}
       />
     </Box>
   );
@@ -67,11 +72,16 @@ function Dots() {
       {[0, 1, 2].map((index) => (
         <Box
           key={index}
-          className="loading-motion"
           boxSize="3"
           borderRadius="full"
           bg="blue.500"
-          style={{ animation: `loading-dot 1s ease-in-out ${index * 0.15}s infinite both` }}
+          animationName="loadingDot"
+          animationDuration="1s"
+          animationTimingFunction="ease-in-out"
+          animationIterationCount="infinite"
+          animationFillMode="both"
+          animationDelay={`${index * 0.15}s`}
+          _motionReduce={{ animation: "none" }}
         />
       ))}
     </Flex>
