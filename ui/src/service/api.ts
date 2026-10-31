@@ -39,3 +39,19 @@ export async function relayResponse(response: Response): Promise<Response> {
     return Response.json({ error: text }, { status: response.status });
   }
 }
+
+// Pass a file download (e.g. a CSV export) back to the browser as-is, keeping
+// the type and filename Rails set. Errors go through relayResponse as JSON.
+export async function relayFile(response: Response): Promise<Response> {
+  if (!response.ok) {
+    return relayResponse(response);
+  }
+
+  const headers = new Headers();
+  for (const name of ["Content-Type", "Content-Disposition"]) {
+    const value = response.headers.get(name);
+    if (value) headers.set(name, value);
+  }
+
+  return new Response(response.body, { status: response.status, headers });
+}

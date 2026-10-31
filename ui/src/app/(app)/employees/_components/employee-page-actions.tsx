@@ -2,7 +2,6 @@ import NextLink from "next/link";
 import { LuDownload, LuPlus } from "react-icons/lu";
 import { Button } from "@chakra-ui/react";
 
-// Export CSV stays disabled until its endpoint exists.
 export function EmployeePageActions() {
   return (
     <>
@@ -11,8 +10,11 @@ export function EmployeePageActions() {
           <LuPlus /> Add Employee
         </NextLink>
       </Button>
-      <Button variant="outline" size="sm" disabled title="Coming soon">
-        <LuDownload /> Export CSV
+      {/* A plain link: the browser downloads the file the API route sends back. */}
+      <Button asChild variant="outline" size="sm">
+        <a href="/api/exports/employees" download>
+          <LuDownload /> Export CSV
+        </a>
       </Button>
     </>
   );
