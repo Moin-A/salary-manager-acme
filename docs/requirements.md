@@ -37,9 +37,9 @@ HR logs in, manages employees and salaries, then runs the pay report. Salary upd
 
 ```mermaid
 flowchart LR
-  A[HR logs in] --> B[Manage employees and salaries]
-  B --> C[Run the pay report]
-  B -.->|salary update| D[Audit log entry]
+  A["HR logs in"] --> B["Manage employees<br/>and salaries"]
+  B --> C["Run the<br/>pay report"]
+  B -.->|salary update| D["Audit log<br/>entry"]
 ```
 
 ## Deliberately left out, and why
