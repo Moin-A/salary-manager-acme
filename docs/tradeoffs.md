@@ -27,6 +27,12 @@ The audit row is written by an `after_update` callback with `create!`, inside th
 
 Cost: `update_column`, `update_all`, `insert_all` and raw SQL skip callbacks, so a change made that way is not audited. The app never changes salaries that way, so given the time available a callback was enough. v2: a Postgres trigger, with the user and note passed via `SET LOCAL`.
 
+### Only salaries are audited for now
+
+`audit_logs` is built to audit any model: each row points at the changed record with `entity_type` and `entity_id` (the polymorphic pattern), and any model can opt in with `has_audit_trail only: [...]`. For now only `Salary` uses it, because salary changes are what HR needs to trace; employee name and country edits are not audited.
+
+Cost: those other changes leave no history, and the polymorphic link is not yet declared in Rails (`belongs_to :entity, polymorphic: true`), so queries join on the two columns by hand. Extending it is small: add `has_audit_trail` to another model, such as `Employee`, and declare the association to use `audit_log.entity` and `salary.audit_logs` directly.
+
 ### Optimistic locking for concurrent edits
 
 A salary update must send the `lock_version` it read; if someone saved in between, the update returns 409 and the UI offers a reload.
