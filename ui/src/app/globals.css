@@ -10,3 +10,23 @@
 html {
   scrollbar-gutter: stable;
 }
+
+/* LoadingOverlay (src/components/loading-overlay.tsx). */
+@keyframes loading-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes loading-dot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes loading-bar {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-motion { animation: none !important; }
+}

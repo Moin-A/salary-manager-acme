@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Spinner, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { ErrorAlert } from "@/components/error-alert";
+import { LoadingOverlay } from "@/components/loading-overlay";
 import { PageHeader } from "@/components/page-header";
 import { useSalaryReport } from "@/hooks/use-salary-report";
 import { ExchangeRatesNote } from "./_components/exchange-rates-note";
@@ -23,23 +24,20 @@ export default function ReportsPage() {
     <Box>
       <PageHeader
         title="Salary Report"
-        actions={
-          <>
-            {loading && <Spinner size="sm" color="blue.500" />}
-            <MonthPicker month={month} onChange={setMonth} />
-          </>
-        }
+        actions={<MonthPicker month={month} onChange={setMonth} />}
       />
       <Text mb="4" color="fg.muted">
         Pay by country for the selected month, using each employee&apos;s salary in effect that month.
       </Text>
       {error && <ErrorAlert message={error} />}
-      {data && (
-        <>
-          <SalaryReportTable countries={data.countries} />
-          <ExchangeRatesNote rates={data.exchange_rates} />
-        </>
-      )}
+      <LoadingOverlay loading={loading}>
+        {data && (
+          <>
+            <SalaryReportTable countries={data.countries} />
+            <ExchangeRatesNote rates={data.exchange_rates} />
+          </>
+        )}
+      </LoadingOverlay>
     </Box>
   );
 }

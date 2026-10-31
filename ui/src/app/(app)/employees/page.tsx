@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { ErrorAlert } from "@/components/error-alert";
+import { LoadingOverlay } from "@/components/loading-overlay";
 import { PageHeader } from "@/components/page-header";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useEmployees } from "@/hooks/use-employees";
@@ -37,10 +38,9 @@ export default function EmployeesPage() {
         onSearchChange={changeSearch}
         countryId={countryId}
         onCountryChange={changeCountry}
-        loading={loading}
       />
       {error && <ErrorAlert message={error} />}
-      {data && <EmployeeResults data={data} onPageChange={setPage} />}
+      <LoadingOverlay loading={loading}>{data && <EmployeeResults data={data} onPageChange={setPage} />}</LoadingOverlay>
     </Box>
   );
 }
