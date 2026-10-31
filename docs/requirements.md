@@ -50,7 +50,7 @@ flowchart LR
 | Kafka or change data capture for audit | A same-transaction write is simpler and cannot lose entries at this volume |
 | Bonus pay (including daily bonus) | Not mentioned in the assignment, so a salary is a single amount |
 | Employee self-service | Employees are not users in this version; it can be added later |
-| More roles (for example read-only) and a screen to manage users | Only HR uses the app, so one Admin role covers it; CanCanCan makes adding roles a change to one Ability class |
+| A read-only User role, and user sign-up or user management | Only a small HR team uses the app, so one Admin role covers it, and admins are created by the seed script. CanCanCan makes adding the read-only role a change to one Ability class |
 | CSV import | Export is in scope; import is a stretch goal, agreed with the assessors |
 | Historical exchange rates and proration | The report converts every month at today's rates and counts a salary for its whole starting month: simple and predictable, so month-to-month changes reflect pay, not currency swings |
 | Automatic exchange-rate refresh | Rates are seeded for now; a scheduled refresh job can be added without changing the report |
