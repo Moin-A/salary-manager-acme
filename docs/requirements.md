@@ -48,6 +48,7 @@ flowchart LR
 | Kafka or change data capture for audit | A same-transaction write is simpler and cannot lose entries at this volume |
 | Bonus pay (including daily bonus) | Not mentioned in the assignment, so a salary is a single amount |
 | Employee self-service | Employees are not users in this version; it can be added later |
+| Paginated salary history, with who made each change | Version one lists an employee's full history in a collapsible section on their page; v2 moves it to its own paginated endpoint and page, and shows the HR user behind each change |
 
 ## Quality requirements
 
