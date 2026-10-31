@@ -24,6 +24,13 @@ class SalaryReport
     end
   end
 
+  # The rates the report converts with: the latest one for each currency.
+  def exchange_rates
+    ExchangeRate.latest_per_currency.map do |rate|
+      { currency: rate.currency_code, rate_to_usd: rate.rate_to_usd.to_f, rate_date: rate.rate_date }
+    end
+  end
+
   private
 
   # 1. Every salary that started by the month's end: current rows, plus the
