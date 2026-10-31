@@ -8,6 +8,18 @@ RSpec.describe SalariesController, type: :controller do
 
   before { sign_in(user) }
 
+  context "access" do
+    it_behaves_like "admin only" do
+      let(:send_request) { get :index, params: { employee_id: employee.id } }
+    end
+
+    it_behaves_like "admin only" do
+      let(:send_request) do
+        patch :update, params: { employee_id: employee.id, id: salary.id, salary: { base_amount: 1500, lock_version: salary.lock_version } }
+      end
+    end
+  end
+
   context "when not logged in" do
     before { sign_out }
 

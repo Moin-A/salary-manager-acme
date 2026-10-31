@@ -8,7 +8,7 @@ RSpec.describe SessionsController, type: :controller do
       post :create, params: { login: "hr1", password: "password" }
 
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body["user"]).to include("id" => user.id, "login" => "hr1", "role" => "hr")
+      expect(response.parsed_body["user"]).to include("id" => user.id, "login" => "hr1", "role" => "admin")
       expect(response.parsed_body["user"]).not_to have_key("password_digest")
       expect(User.find_signed(response.parsed_body["token"], purpose: :session)).to eq(user)
     end
@@ -35,7 +35,17 @@ RSpec.describe SessionsController, type: :controller do
       get :show
 
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body).to include("id" => user.id, "login" => "hr1", "role" => "hr")
+      expect(response.parsed_body).to include("id" => user.id, "login" => "hr1", "role" => "admin")
+    end
+
+    it "returns the current user even when they are not an admin" do
+      viewer = create(:user, role: "viewer")
+      sign_in(viewer)
+
+      get :show
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to include("id" => viewer.id, "role" => "viewer")
     end
 
     it "rejects a missing token" do

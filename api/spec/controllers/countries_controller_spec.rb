@@ -5,6 +5,10 @@ RSpec.describe CountriesController, type: :controller do
 
   before { sign_in(user) }
 
+  it_behaves_like "admin only" do
+    let(:send_request) { get :index }
+  end
+
   context "index" do
     let!(:usa) { create(:country) }
     let!(:india) { create(:country, :india) }

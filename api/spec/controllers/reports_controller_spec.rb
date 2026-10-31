@@ -5,6 +5,10 @@ RSpec.describe ReportsController, type: :controller do
 
   before { sign_in(user) }
 
+  it_behaves_like "admin only" do
+    let(:send_request) { get :salaries_by_country, params: { month: "2026-10" } }
+  end
+
   context "salaries_by_country" do
     let(:current_month) { Date.current.strftime("%Y-%m") }
     let(:previous_month) { 1.month.ago.strftime("%Y-%m") }

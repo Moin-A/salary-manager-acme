@@ -8,6 +8,16 @@ RSpec.describe EmployeesController, type: :controller do
 
   before { sign_in(user) }
 
+  context "access" do
+    it_behaves_like "admin only" do
+      let(:send_request) { get :index }
+    end
+
+    it_behaves_like "admin only" do
+      let(:send_request) { post :create, params: { employee: { first_name: "Ada", last_name: "Lovelace", country_id: create(:country).id } } }
+    end
+  end
+
   context "when not logged in" do
     let(:employee) { create(:employee, country_id: country.id) }
 
